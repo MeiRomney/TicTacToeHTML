@@ -1,6 +1,10 @@
-const player = document.getElementById("cross");
-const computer = document.getElementById("circle");
 const buttons = {};
+let playerTurn = true;
+let playerScore = 0, computerScore = 0, tieScore = 0;
+
+document.getElementById("restart").onclick = function () {
+    restartBoard();
+}
 
 // Player move
 function playerMove() {
@@ -8,7 +12,7 @@ function playerMove() {
         buttons[i] = document.getElementById(i.toString());
 
         buttons[i].onclick = function () {
-            if(buttons[i].children.length > 0) return; // Prevent overwriting
+            if(!playerTurn || buttons[i].children.length > 0) return; // Prevent overwriting
 
             const buttonImg = document.createElement("img");
             buttonImg.src = "images/cross.png";
@@ -20,9 +24,10 @@ function playerMove() {
             const result = check();
 
             if(!result) {
+                playerTurn = false;
                 setTimeout(() => {
                     computerMove();
-                }, 500);
+                }, 300);
             }
         };
     }
@@ -39,7 +44,8 @@ function computerMove() {
 
             buttons[i].classList.add("circle");
             buttons[i].appendChild(buttonImg);
-            check();
+            const result = check();
+            if(!result) playerTurn = true;
             break;
         }
     }
@@ -81,6 +87,15 @@ function check() {
             return "Computer";
         }
     }
+
+    const tie = Object.values(buttons).every(btn => btn.children.length > 0);
+    if(tie) {
+        setTimeout(() => {
+            alert("It's a tie!");
+            endGame();
+        }, 200);
+        return "Tie";
+    }
     return null;
 }
 
@@ -88,6 +103,15 @@ function endGame() {
     for(let i = 1; i <= 9; i++) {
         buttons[i].onclick = null;
     }
+}
+
+function restartBoard() {
+    for(let i = 1; i <= 9; i++) {
+        buttons[i].innerHTML = "";
+        buttons[i].classList.remove("cross", "circle");
+    }
+    playerTurn = true;
+    playerMove();
 }
 
 playerMove();

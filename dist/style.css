@@ -73,13 +73,22 @@ button {
     width: 80px;
 }
 
-.score {
+.ending {
     display: flex;
     flex-direction: row;
     justify-content: center;
     gap: 40px;
 }
 
-.score h2 {
+#restart {
+    font-size: 20px;
+    color: #fff;
+    background: none;
+    border: 3px solid #fff;
+    padding: 0 20px 0;
+}
+
+#score {
+    font-size: 20px;
     color: #fff;
 }
