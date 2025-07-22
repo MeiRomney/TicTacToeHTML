@@ -61,7 +61,15 @@ td:nth-child(3) {
     border-left: 2px solid #fff;
 }
 
-#circle img {
+button {
+    cursor: pointer;
+}
+
+.cross img {
+    width: 80px;
+}
+
+.circle img {
     width: 80px;
 }
 
