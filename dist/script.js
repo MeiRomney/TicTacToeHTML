@@ -1,10 +1,15 @@
+const restart = document.getElementById("restart");
 const buttons = {};
 let playerTurn = true;
 let playerScore = 0, computerScore = 0, tieScore = 0;
 
-document.getElementById("restart").onclick = function () {
+restart.addEventListener("click", function() {
     restartBoard();
-}
+    restart.classList.add("restartClicked");
+    setTimeout(() => {
+        restart.classList.remove("restartClicked");
+    }, 300);
+})
 
 // Player move
 function playerMove() {
@@ -71,6 +76,8 @@ function check() {
         ) {
             setTimeout(() => {
                 alert("Player wins!");
+                playerScore++;
+                updateScore();
                 endGame();
             }, 200);
             return "Player";
@@ -82,6 +89,8 @@ function check() {
         ) {
             setTimeout(() => {
                 alert("Computer wins!");
+                computerScore++;
+                updateScore();
                 endGame();
             }, 200);
             return "Computer";
@@ -92,6 +101,8 @@ function check() {
     if(tie) {
         setTimeout(() => {
             alert("It's a tie!");
+            tieScore++;
+            updateScore();
             endGame();
         }, 200);
         return "Tie";
@@ -112,6 +123,11 @@ function restartBoard() {
     }
     playerTurn = true;
     playerMove();
+}
+
+function updateScore() {
+    document.getElementById("score").innerText = 
+        `Player: ${playerScore} | Computer: ${computerScore} | Tie: ${tieScore}`;
 }
 
 playerMove();
