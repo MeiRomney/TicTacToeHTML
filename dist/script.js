@@ -40,20 +40,81 @@ function playerMove() {
 
 // Computer move
 function computerMove() {
+    // 1 Win if possible
     for(let i = 1; i <= 9; i++) {
         if(buttons[i].children.length === 0) {
-            const buttonImg = document.createElement("img");
-            buttonImg.src = "images/circle.png";
-            buttonImg.alt = "circle";
-            buttonImg.width = 80;
-
             buttons[i].classList.add("circle");
-            buttons[i].appendChild(buttonImg);
-            const result = check();
-            if(!result) playerTurn = true;
-            break;
+            if(isWinning("circle")) {
+                placeCircle(i);
+                return;
+            }
+            buttons[i].classList.remove("circle");
         }
     }
+    // 2 Defend
+    for(let i = 1; i <= 9; i++) {
+        if(buttons[i].children.length === 0) {
+            buttons[i].classList.add("cross");
+            if(isWinning("cross")) {
+                buttons[i].classList.remove("cross");
+                placeCircle(i);
+                return;
+            }
+            buttons[i].classList.remove("cross");
+        }
+    }
+    // 3 Take center
+    if(buttons[5].children.length === 0) {
+        placeCircle(5);
+        return;
+    }
+    // 4 Take a corner
+    const corners = [1, 3, 7, 9];
+    for(const i of corners) {
+        if(buttons[i].children.length === 0) {
+            placeCircle(i);
+            return;
+        }
+    }
+    // 5 Fill empty space
+    const sides = [2, 4, 6, 8];
+    for(const i of sides) {
+        if(buttons[i].children.length === 0) {
+            placeCircle(i);
+            return;
+        }
+    }
+}
+
+function isWinning(symbol) {
+    const winCombos = [
+        [1, 2, 3], // Top row
+        [4, 5, 6], // Middle row
+        [7, 8, 9], // Bottom row
+        [1, 4, 7], // Left column
+        [2, 5, 8], // Middle column
+        [3, 6, 9], // Right column
+        [1, 5, 9], // Diagonal
+        [3, 5, 7] // Diagonal
+    ];
+    return winCombos.some(([a, b, c]) =>
+        buttons[a].classList.contains(symbol) &&
+        buttons[b].classList.contains(symbol) &&
+        buttons[c].classList.contains(symbol)
+    );
+}
+
+function placeCircle(i) {
+    const buttonImg = document.createElement("img");
+    buttonImg.src = "images/circle.png";
+    buttonImg.alt = "circle";
+    buttonImg.width = 80;
+
+    buttons[i].classList.add("circle");
+    buttons[i].appendChild(buttonImg);
+
+    const result = check();
+    if(!result) playerTurn = true;
 }
 
 function check() {
@@ -66,7 +127,7 @@ function check() {
         [3, 6, 9], // Right column
         [1, 5, 9], // Diagonal
         [3, 5, 7] // Diagonal
-    ]
+    ];
     for(const combo of winCombos) {
         const [a, b, c] = combo;
         if(
